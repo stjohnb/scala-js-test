@@ -1,0 +1,1 @@
+Playground for scala-js
