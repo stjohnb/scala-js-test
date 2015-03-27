@@ -3,16 +3,22 @@
 <head>
   <title>Example Scala.js application</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script type="text/javascript">
+        function resize_canvas(){
+            tutorial.webapp.Game().resizeCanvas(document.getElementById('canvas'))
+        }
+    </script>
 </head>
-<body>
+<body onresize="resize_canvas()">
 
 <div>
-  <canvas id="canvas" width="800" height="800"></canvas>
+  <canvas id="canvas"></canvas>
 </div>
 
 <script type="text/javascript" src="../scala-js-tutorial-fastopt.js"></script>
 <script>
-      tutorial.webapp.FractalsTest().main(document.getElementById('canvas'));
+      tutorial.webapp.Game().main(document.getElementById('canvas'));
 </script>
+
 </body>
 </html>
