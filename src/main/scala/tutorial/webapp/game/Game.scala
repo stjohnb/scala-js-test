@@ -1,5 +1,6 @@
-package tutorial.webapp
+package tutorial.webapp.game
 
+import tutorial.webapp.common.RGB
 import org.scalajs.dom
 import org.scalajs.dom.{CanvasRenderingContext2D, html}
 
