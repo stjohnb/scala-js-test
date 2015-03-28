@@ -18,7 +18,6 @@ object Game {
   def run() = {
     count += 1
     balls = balls.map { _.move() }
-    if(count % 1000 == 0 ) balls.foreach(println)
   }
 
   def draw() = {
@@ -29,9 +28,6 @@ object Game {
   @JSExport
   def resizeCanvas(canvas: html.Canvas) = {
     import org.scalajs.dom
-
-    println(s"resize w: ${canvas.width} = ${dom.window.innerWidth}")
-    println(s"resize h: ${canvas.height} = ${dom.window.innerHeight}")
 
     canvas.width = dom.window.innerWidth - 20
     canvas.height = dom.window.innerHeight - 20
@@ -65,35 +61,24 @@ object Game {
     dom.onkeypress = {(e: dom.KeyboardEvent) =>
       if(e.keyCode == 32) {
         val created = Ball(canvas)
-        println(s"Created $created")
         balls = balls :+ created
       }
       if(e.keyCode == 113) {
-        println(s"Clearing")
         balls = Seq.empty
       }
     }
     dom.onmousedown = { e: dom.MouseEvent =>
       mouseDown = Some(Point(e.clientX, e.clientY))
-      println(s"MouseDown $mouseDown")
     }
     dom.onmouseup = { e: dom.MouseEvent =>
-      mouseDown.map { start =>
+      mouseDown.foreach { start =>
         val ball = Ball(canvas).copy(
           position = start,
-          velocity = Velocity(e.clientX - start.x, e.clientY - start.y)
+          velocity = Velocity(e.clientX - start.x, e.clientY - start.y) / 10
         )
-        println(s"MouseUp $ball")
         mouseDown = None
-        balls :+ ball
+        balls = balls :+ ball
       }
     }
   }
 }
-
-case class Point(x: Double, y: Double) {
-  def +(p: Point) = Point(x + p.x, y + p.y)
-  def /(d: Double) = Point(x / d, y / d)
-}
-
-case class Velocity(x: Double, y: Double)

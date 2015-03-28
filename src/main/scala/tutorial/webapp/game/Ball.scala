@@ -40,7 +40,7 @@ object Ball {
   def apply(maxXy: Point): Ball = {
     Ball(
       radius = Random.nextInt(5) + 1,
-      colour = RGB(125, 228, 164),
+      colour = randomColour,
       position = Point(Random.nextInt(maxXy.x.toInt) /2, Random.nextInt(maxXy.y.toInt)) /2,
       velocity = Velocity(randomSpeed, randomSpeed),
       maxXy = maxXy
@@ -54,5 +54,14 @@ object Ball {
   def apply(canvas: html.Canvas): Ball = {
     Ball(maxXy = Point(canvas.height, canvas.width))
   }
+}
+
+case class Point(x: Double, y: Double) {
+  def +(p: Point) = Point(x + p.x, y + p.y)
+  def /(d: Double) = Point(x / d, y / d)
+}
+
+case class Velocity(x: Double, y: Double) {
+  def /(d: Double) = Velocity(x / d, y / d)
 }
 
