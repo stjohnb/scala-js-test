@@ -22,6 +22,7 @@ object Game {
 
   def draw() = {
     val ctx = context(canvas)
+    clear(canvas)
     balls.foreach(_.draw(ctx))
   }
 
@@ -32,19 +33,19 @@ object Game {
     canvas.width = dom.window.innerWidth - 20
     canvas.height = dom.window.innerHeight - 20
 
-    fill(canvas)
+    clear(canvas)
   }
 
   @JSExport
   def main() = {
     resizeCanvas(canvas)
-    fill(canvas)
+    clear(canvas)
 
     handleKeyStrokes()
     dom.setInterval(() => {run(); draw()}, timeStep)
   }
 
-  def fill(canvas: html.Canvas): Unit = {
+  def clear(canvas: html.Canvas): Unit = {
     val ctx = context(canvas)
 
     ctx.fillStyle = "black"

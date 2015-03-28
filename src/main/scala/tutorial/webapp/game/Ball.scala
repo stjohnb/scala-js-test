@@ -17,14 +17,16 @@ case class Ball(radius: Int = 5,
 
   def move(): Ball = {
     val xCorrected = if (position.x > boxWidth || position.x < 0) {
-      this.copy(velocity = this.velocity.copy(x = this.velocity.x * (smallRandom-1)))
+      this.copy(velocity = this.velocity.copy(x = this.velocity.x * (smallRandom - 1)))
     } else this
 
     val yCorrected = if (xCorrected.position.y > boxHeight || xCorrected.position.y < 0) {
-      xCorrected.copy(velocity = xCorrected.velocity.copy(y = xCorrected.velocity.y * (smallRandom-1)))
+      xCorrected.copy(velocity = xCorrected.velocity.copy(y = xCorrected.velocity.y * (smallRandom - 1)))
     } else xCorrected
 
-    yCorrected.copy(position = Point(yCorrected.position.x + yCorrected.velocity.x, yCorrected.position.y + yCorrected.velocity.y))
+    val slowedDown = yCorrected.copy(velocity = yCorrected.velocity * 0.999)
+
+    slowedDown.copy(position = Point(slowedDown.position.x + slowedDown.velocity.x, slowedDown.position.y + slowedDown.velocity.y))
   }
 
   def smallRandom = (Random.nextDouble() - 0.5d) / 100
@@ -63,5 +65,6 @@ case class Point(x: Double, y: Double) {
 
 case class Velocity(x: Double, y: Double) {
   def /(d: Double) = Velocity(x / d, y / d)
+  def *(d: Double) = Velocity(x * d, y * d)
 }
 
