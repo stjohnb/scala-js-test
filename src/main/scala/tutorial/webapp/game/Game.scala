@@ -1,64 +1,15 @@
 package tutorial.webapp.game
 
-import tutorial.webapp.common.RGB
 import org.scalajs.dom
-import org.scalajs.dom.{CanvasRenderingContext2D, html}
+import org.scalajs.dom.html
 
 import scala.scalajs.js.annotation.JSExport
-import scala.util.Random
-
-case class Ball(radius: Int = 5,
-                colour: RGB = RGB(Random.nextInt(255), Random.nextInt(255),	Random.nextInt(255)),
-                position: Point,
-                velocity: Point,
-                maxXy: Point) {
-  def draw(ctx: CanvasRenderingContext2D): Unit = {
-    ctx.fillStyle = colour.toString
-    ctx.fillRect(position.x.toInt - radius, position.y.toInt - radius, radius * 2, radius * 2)
-  }
-
-  def move(): Ball = {
-    val xCorrected = if (position.x > boxWidth || position.x < 0) {
-      this.copy(velocity = this.velocity.copy(x = this.velocity.x * -1))
-    } else this
-
-    val yCorrected = if (xCorrected.position.y > boxHeight || xCorrected.position.y < 0) {
-      xCorrected.copy(velocity = xCorrected.velocity.copy(y = xCorrected.velocity.y * -1))
-    } else xCorrected
-
-    yCorrected.copy(position = yCorrected.position + yCorrected.velocity)
-  }
-
-  def boxHeight = maxXy.x
-  def boxWidth = maxXy.y
-}
-
-object Ball {
-
-  val maxSpeed = 100
-
-  def apply(maxXy: Point): Ball = {
-    Ball(
-      radius = Random.nextInt(5),
-      colour = RGB(Random.nextInt(255), Random.nextInt(255),	Random.nextInt(255)),
-      position = Point(Random.nextInt(maxXy.x.toInt), Random.nextInt(maxXy.y.toInt)),
-      velocity = Point(randomSpeed, randomSpeed),
-      maxXy = maxXy
-    )
-  }
-
-  def randomSpeed: Double = (Random.nextInt(maxSpeed) - (maxSpeed / 2)) * Random.nextDouble()
-
-  def apply(canvas: html.Canvas): Ball = {
-    Ball(maxXy = Point(canvas.height, canvas.width))
-  }
-}
 
 @JSExport
 object Game {
 
   var count = 0
-  val timestep = 2d
+  val timeStep = 2d
 
   val canvas = dom.document.getElementById("canvas").asInstanceOf[html.Canvas]
 
@@ -67,6 +18,7 @@ object Game {
   def run() = {
     count += 1
     balls = balls.map { _.move() }
+    if(count % 1000 == 0 ) balls.foreach(println)
   }
 
   def draw() = {
@@ -93,7 +45,7 @@ object Game {
     fill(canvas)
 
     handleKeyStrokes()
-    dom.setInterval(() => {run(); draw()}, timestep)
+    dom.setInterval(() => {run(); draw()}, timeStep)
   }
 
   def fill(canvas: html.Canvas): Unit = {
@@ -129,7 +81,7 @@ object Game {
       mouseDown.map { start =>
         val ball = Ball(canvas).copy(
           position = start,
-          velocity = Point(e.clientX - start.x, e.clientY - start.y)
+          velocity = Velocity(e.clientX - start.x, e.clientY - start.y)
         )
         println(s"MouseUp $ball")
         mouseDown = None
@@ -143,3 +95,5 @@ case class Point(x: Double, y: Double) {
   def +(p: Point) = Point(x + p.x, y + p.y)
   def /(d: Double) = Point(x / d, y / d)
 }
+
+case class Velocity(x: Double, y: Double)
