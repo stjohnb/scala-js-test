@@ -6,10 +6,14 @@ import org.scalajs.dom.{CanvasRenderingContext2D, html}
 import scala.scalajs.js.annotation.JSExport
 import scala.util.Random
 
-case class Ball(radius: Int = 5, colour: RGB, position: Point, velocity: Point, maxXy: Point) {
+case class Ball(radius: Int = 5,
+                colour: RGB = RGB(Random.nextInt(255), Random.nextInt(255),	Random.nextInt(255)),
+                position: Point,
+                velocity: Point,
+                maxXy: Point) {
   def draw(ctx: CanvasRenderingContext2D): Unit = {
     ctx.fillStyle = colour.toString
-    ctx.fillRect(position.x - radius, position.y - radius, radius * 2, radius * 2)
+    ctx.fillRect(position.x.toInt - radius, position.y.toInt - radius, radius * 2, radius * 2)
   }
 
   def move(): Ball = {
@@ -36,11 +40,13 @@ object Ball {
     Ball(
       radius = Random.nextInt(5),
       colour = RGB(Random.nextInt(255), Random.nextInt(255),	Random.nextInt(255)),
-      position = Point(Random.nextInt(maxXy.x), Random.nextInt(maxXy.y)),
-      velocity = Point(Random.nextInt(maxSpeed) - (maxSpeed / 2), Random.nextInt(maxSpeed) - (maxSpeed / 2)),
+      position = Point(Random.nextInt(maxXy.x.toInt), Random.nextInt(maxXy.y.toInt)),
+      velocity = Point(randomSpeed, randomSpeed),
       maxXy = maxXy
     )
   }
+
+  def randomSpeed: Double = (Random.nextInt(maxSpeed) - (maxSpeed / 2)) * Random.nextDouble()
 
   def apply(canvas: html.Canvas): Ball = {
     Ball(maxXy = Point(canvas.height, canvas.width))
@@ -86,7 +92,6 @@ object Game {
     fill(canvas)
 
     handleKeyStrokes()
-    balls = for (i <- 1 until 100) yield Ball(canvas)
     dom.setInterval(() => {run(); draw()}, timestep)
   }
 
@@ -102,12 +107,38 @@ object Game {
   def handleKeyStrokes() = {
     import org.scalajs.dom
 
+    var mouseDown: Option[Point] = None
+
     dom.onkeypress = {(e: dom.KeyboardEvent) =>
-      if(e.keyCode == 32) balls = balls :+ Ball(canvas)
+      if(e.keyCode == 32) {
+        val created = Ball(canvas)
+        println(s"Created $created")
+        balls = balls :+ created
+      }
       if(e.keyCode == 113) {
         println(s"Clearing")
         balls = Seq.empty
       }
     }
+    dom.onmousedown = { e: dom.MouseEvent =>
+      mouseDown = Some(Point(e.clientX, e.clientY))
+      println(s"MouseDown $mouseDown")
+    }
+    dom.onmouseup = { e: dom.MouseEvent =>
+      mouseDown.map { start =>
+        val ball = Ball(canvas).copy(
+          position = start,
+          velocity = Point(e.clientX - start.x, e.clientY - start.y)
+        )
+        println(s"MouseUp $ball")
+        mouseDown = None
+        balls :+ ball
+      }
+    }
   }
+}
+
+case class Point(x: Double, y: Double) {
+  def +(p: Point) = Point(x + p.x, y + p.y)
+  def /(d: Double) = Point(x / d, y / d)
 }
