@@ -25,10 +25,10 @@ object Game {
     for {
       i <- 0 to balls.size - 1
       j <- i + 1 to balls.size - 1
-    } collide(balls(i), balls(j))
+    } collideIfNecessary(balls(i), balls(j))
   }
 
-  def collide(b1: Ball, b2: Ball): Unit = {
+  def collideIfNecessary(b1: Ball, b2: Ball): Unit = {
     val rSum = b1.radius + b2.radius
 
     val dx = Math.abs(b1.position.x - b2.position.x)
@@ -37,12 +37,44 @@ object Game {
       if(dy <= rSum) {
         val d = Math.sqrt(dx * dx + dy * dy)
         if(d < rSum){
-          b1.velocity = b1.velocity * -1
-          b2.velocity = b2.velocity * -1
+          performCollision()
         }
       }
     }
+
+    def performCollision() = {
+      //Find the unit normal and the unit tangent
+      val unitNormal = Vector(b1.position.x - b2.position.x, b1.position.y - b2.position.y).unit
+      val unitTangent = Vector(-1 * unitNormal.y, unitNormal.x)
+
+      //Project velocities onto the unit normal and unit tangent
+      val v1n = unitNormal dotProduct b1.velocity
+      val v1t = unitTangent dotProduct b1.velocity
+      val v2n = unitNormal dotProduct b2.velocity
+      val v2t = unitTangent dotProduct b2.velocity
+
+      //Tangential velocities are not changed
+      val v1tPrimeScalar = v1t
+      val v2tPrimeScalar = v2t
+
+      //Normal velocities obey 1d collision formulae
+      val v1nPrimeScalar = (v1n * (b1.mass - b2.mass) + 2 * b2.mass * v2n) / (b1.mass + b2.mass)
+      val v2nPrimeScalar = (v2n * (b2.mass - b1.mass) + 2 * b1.mass * v1n) / (b1.mass + b2.mass)
+
+      //Convert scalars into vectors
+      val v1nPrime = unitNormal * v1nPrimeScalar
+      val v1tPrime = unitTangent * v1tPrimeScalar
+
+      val v2nPrime = unitNormal * v2nPrimeScalar
+      val v2tPrime = unitTangent * v2tPrimeScalar
+
+      //Final velocities are the sums of normal and tangential velocities
+      b1.velocity = v1nPrime + v1tPrime
+      b2.velocity = v2nPrime + v2tPrime
+    }
   }
+
+
 
   def draw() = {
     val ctx = context(canvas)
@@ -81,7 +113,7 @@ object Game {
   def handleKeyStrokes() = {
     import org.scalajs.dom
 
-    var mouseDown: Option[Point] = None
+    var mouseDown: Option[Vector] = None
 
     dom.onkeypress = {(e: dom.KeyboardEvent) =>
       if(e.keyCode == 32) {
@@ -93,14 +125,14 @@ object Game {
       }
     }
     dom.onmousedown = { e: dom.MouseEvent =>
-      mouseDown = Some(Point(e.clientX, e.clientY))
+      mouseDown = Some(Vector(e.clientX, e.clientY))
     }
     dom.onmouseup = { e: dom.MouseEvent =>
       mouseDown.foreach { start =>
         val ball = Ball(canvas)
 
         ball.position = start
-        ball.velocity = Velocity(e.clientX - start.x, e.clientY - start.y) / 10
+        ball.velocity = Vector(e.clientX - start.x, e.clientY - start.y) / 10
 
         mouseDown = None
         balls = balls :+ ball
