@@ -113,7 +113,7 @@ object Game {
   def handleKeyStrokes() = {
     import org.scalajs.dom
 
-    var mouseDown: Option[Vector] = None
+    var newestOpt: Option[Ball] = None
 
     dom.onkeypress = {(e: dom.KeyboardEvent) =>
       if(e.keyCode == 32) {
@@ -125,17 +125,17 @@ object Game {
       }
     }
     dom.onmousedown = { e: dom.MouseEvent =>
-      mouseDown = Some(Vector(e.clientX, e.clientY))
+      val ball = Ball(canvas)
+      ball.position = Vector(e.clientX, e.clientY)
+      ball.velocity = Vector(0,0)
+      balls = balls :+ ball
+      newestOpt = Some(ball)
     }
     dom.onmouseup = { e: dom.MouseEvent =>
-      mouseDown.foreach { start =>
-        val ball = Ball(canvas)
+      newestOpt.foreach { newest =>
+        newest.velocity = Vector(e.clientX - newest.position.x, e.clientY - newest.position.y) / 10
 
-        ball.position = start
-        ball.velocity = Vector(e.clientX - start.x, e.clientY - start.y) / 10
-
-        mouseDown = None
-        balls = balls :+ ball
+        newestOpt = None
       }
     }
   }
