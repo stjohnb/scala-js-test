@@ -21,7 +21,7 @@ trait Game {
   
   protected var currentAction: Option[Int] = None
 
-  def run() = {
+  def run(): Unit = {
     handleCollisions()
     balls.foreach { b => b.move()(canvas) }
   }
