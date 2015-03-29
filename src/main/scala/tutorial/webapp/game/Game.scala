@@ -17,7 +17,31 @@ object Game {
 
   def run() = {
     count += 1
-    balls = balls.map { _.move() }
+    handleCollisions()
+    balls.foreach { b => b.move() }
+  }
+
+  def handleCollisions() = {
+    for {
+      i <- 0 to balls.size - 1
+      j <- i + 1 to balls.size - 1
+    } collide(balls(i), balls(j))
+  }
+
+  def collide(b1: Ball, b2: Ball): Unit = {
+    val rSum = b1.radius + b2.radius
+
+    val dx = Math.abs(b1.position.x - b2.position.x)
+    if(dx <= rSum)  {
+      val dy = Math.abs(b1.position.y - b2.position.y)
+      if(dy <= rSum) {
+        val d = Math.sqrt(dx * dx + dy * dy)
+        if(d < rSum){
+          b1.velocity = b1.velocity * -1
+          b2.velocity = b2.velocity * -1
+        }
+      }
+    }
   }
 
   def draw() = {
@@ -73,10 +97,11 @@ object Game {
     }
     dom.onmouseup = { e: dom.MouseEvent =>
       mouseDown.foreach { start =>
-        val ball = Ball(canvas).copy(
-          position = start,
-          velocity = Velocity(e.clientX - start.x, e.clientY - start.y) / 10
-        )
+        val ball = Ball(canvas)
+
+        ball.position = start
+        ball.velocity = Velocity(e.clientX - start.x, e.clientY - start.y) / 10
+
         mouseDown = None
         balls = balls :+ ball
       }
