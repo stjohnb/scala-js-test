@@ -2,6 +2,8 @@ package tutorial.webapp.game
 
 import org.scalajs.dom
 import org.scalajs.dom.html
+import org.scalajs.dom.html.Canvas
+import tutorial.webapp.game.ScratchPad._
 
 import scala.scalajs.js.annotation.JSExport
 
@@ -14,14 +16,18 @@ trait Game {
   lazy val timeStep: Double = 2d
   lazy val coefficientOfRestitution: Double = 0.8d
 
-  lazy val canvas = dom.document.getElementById("canvas").asInstanceOf[html.Canvas]
+  def canvas: Canvas = dom.document.getElementById("canvas").asInstanceOf[html.Canvas]
 
   protected var balls = initialBalls
+  
+  protected var currentAction: Option[Int] = None
 
   def run() = {
     handleCollisions()
-    balls.foreach { b => b.move() }
+    balls.foreach { b => b.move()(canvas) }
   }
+
+  def pause(): Unit = currentAction.foreach(dom.clearInterval)
 
   def handleCollisions() = {
     for {
@@ -30,18 +36,8 @@ trait Game {
     } collideIfNecessary(balls(i), balls(j))
 
     def collideIfNecessary(b1: Ball, b2: Ball): Unit = {
-      val rSum = b1.radius + b2.radius
+      if (b1.touching(b2)) performCollision()
 
-      val dx = Math.abs(b1.position.x - b2.position.x)
-      if (dx <= rSum) {
-        val dy = Math.abs(b1.position.y - b2.position.y)
-        if (dy <= rSum) {
-          val d = Math.sqrt(dx * dx + dy * dy)
-          if (d < rSum) {
-            performCollision()
-          }
-        }
-      }
 
       def performCollision() = {
         //Find the unit normal and the unit tangent
@@ -98,7 +94,8 @@ trait Game {
     clear(canvas)
 
     handleKeyStrokes()
-    dom.setInterval(() => {run(); draw()}, timeStep)
+    val action = dom.setInterval(() => {run(); draw()}, timeStep)
+    currentAction = Some(action)
   }
 
   def clear(canvas: html.Canvas): Unit = {

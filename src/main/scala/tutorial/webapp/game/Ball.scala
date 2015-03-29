@@ -1,6 +1,7 @@
 package tutorial.webapp.game
 
 import org.scalajs.dom._
+import org.scalajs.dom.html._
 import tutorial.webapp.common.RGB
 
 import scala.util.Random
@@ -8,19 +9,19 @@ import scala.util.Random
 class Ball(val radius: Int = 5,
                 colour: RGB = RGB(Random.nextInt(255), Random.nextInt(255),	Random.nextInt(255)),
                 var position: Vector,
-                var velocity: Vector,
+                var velocity: Vector = Vector (0, 0),
                 maxXy: Vector) {
   def draw(ctx: CanvasRenderingContext2D): Unit = {
     ctx.fillStyle = colour.toString
     ctx.fillRect(position.x.toInt - radius, position.y.toInt - radius, radius * 2, radius * 2)
   }
 
-  def move(): Unit = {
-    if (position.x > boxWidth || position.x < 0) {
+  def move()(canvas: Canvas): Unit = {
+    if (position.x > canvas.width || position.x < 0) {
       velocity = velocity.copy(x = velocity.x * (smallRandom - 1))
     }
 
-    if (position.y > boxHeight || position.y < 0) {
+    if (position.y > canvas.height || position.y < 0) {
       velocity = velocity.copy(y = velocity.y * (smallRandom - 1))
     }
 
@@ -31,13 +32,26 @@ class Ball(val radius: Int = 5,
 
   def smallRandom = (Random.nextDouble() - 0.5d) / 100
 
-  def boxHeight = maxXy.x
-  def boxWidth = maxXy.y
 
   lazy val mass = (4d / 3d) * Math.PI * radius * radius
 
   def momentumX = mass * velocity.x
   def momentumY = mass * velocity.y
+
+  def touching(other: Ball): Boolean = {
+    val rSum = this.radius + other.radius
+
+    val dx = Math.abs(this.position.x - other.position.x)
+    if (dx <= rSum) {
+      val dy = Math.abs(this.position.y - other.position.y)
+      if (dy <= rSum) {
+        val d = Math.sqrt(dx * dx + dy * dy)
+        if (d < rSum) {
+          true
+        }else false
+      }else false
+    }else false
+  }
 
   override def toString = s"Ball: Radius: $radius Position: (${position.x}, ${position.y}), Velocity: (${velocity.x}, ${velocity.y})"
 }

@@ -9,13 +9,11 @@ object ScratchPad extends Game{
 
     var newestOpt: Option[Ball] = None
 
-    dom.onkeypress = {(e: dom.KeyboardEvent) =>
-      if(e.keyCode == 32) {
-        val created = Ball(canvas)
-        balls = balls :+ created
-      }
-      if(e.keyCode == 113) {
-        balls = Seq.empty
+    dom.onkeypress = { e: dom.KeyboardEvent =>
+      e.keyCode match {
+        case 32 => balls = balls :+ Ball(canvas)
+        case 113 => pause()
+        case _ =>
       }
     }
     dom.onmousedown = { e: dom.MouseEvent =>

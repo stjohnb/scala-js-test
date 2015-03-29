@@ -15,5 +15,9 @@ object RGB {
 
     RGB(r, g, b)
   }
+
+  val red = RGB(247, 22, 52)
+  val blue = RGB(57, 144, 243)
+  val green = RGB(48, 247, 81)
 }
 
