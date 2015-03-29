@@ -24,7 +24,7 @@ class Ball(val radius: Int = 5,
       velocity = velocity.copy(y = velocity.y * (smallRandom - 1))
     }
 
-    velocity = velocity * 0.999
+    velocity = velocity * 0.99
 
     position = Vector(position.x + velocity.x, position.y + velocity.y)
   }
