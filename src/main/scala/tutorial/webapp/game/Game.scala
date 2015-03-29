@@ -18,13 +18,18 @@ trait Game {
 
   def canvas: Canvas = dom.document.getElementById("canvas").asInstanceOf[html.Canvas]
 
-  protected var balls = initialBalls
+  protected var balls = Seq.empty[Ball]
   
   protected var currentAction: Option[Int] = None
 
   def run() = {
     handleCollisions()
     balls.foreach { b => b.move()(canvas) }
+  }
+
+  def init(): Unit = {
+    val action = dom.setInterval(() => {run(); draw()}, timeStep)
+    currentAction = Some(action)
   }
 
   def pause(): Unit = currentAction.foreach(dom.clearInterval)
@@ -94,8 +99,8 @@ trait Game {
     clear(canvas)
 
     handleKeyStrokes()
-    val action = dom.setInterval(() => {run(); draw()}, timeStep)
-    currentAction = Some(action)
+    balls = initialBalls
+    init()
   }
 
   def clear(canvas: html.Canvas): Unit = {

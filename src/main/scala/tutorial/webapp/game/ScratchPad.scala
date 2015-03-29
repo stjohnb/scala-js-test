@@ -1,5 +1,7 @@
 package tutorial.webapp.game
 
+import org.scalajs.dom
+
 import scala.scalajs.js.annotation.JSExport
 
 @JSExport
@@ -33,4 +35,5 @@ object ScratchPad extends Game{
   }
 
   override def initialBalls: Seq[Ball] = Seq.empty
+
 }
