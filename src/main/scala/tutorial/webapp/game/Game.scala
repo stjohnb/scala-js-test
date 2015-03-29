@@ -14,16 +14,22 @@ trait Game {
 
   lazy val timeStep: Double = 2d
   lazy val coefficientOfRestitution: Double = 0.8d
+  lazy val acceleration: Double = 0.99
+  lazy val turnLength = 300
 
   def canvas: Canvas = dom.document.getElementById("canvas").asInstanceOf[html.Canvas]
 
   protected var balls = Seq.empty[Ball]
-  
+
   protected var currentAction: Option[Int] = None
 
+  var count = 0
+
   def run(): Unit = {
+    count += 1
+    if(count % turnLength == 0) pause()
     handleCollisions()
-    balls.foreach { b => b.move()(canvas) }
+    balls.foreach { b => b.move(acceleration)(canvas) }
   }
 
   def init(): Unit = {

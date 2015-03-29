@@ -10,6 +10,8 @@ object ProtectTheKing extends Game {
 
   lazy val kingR = 10
   lazy val pawnR = 30
+  override lazy val coefficientOfRestitution: Double = 1d
+  override lazy val acceleration: Double = 0.98d
 
   lazy val team1 = Seq(
     ball(position = Vector(200, canvas.height /2), colour = RGB.blue, radius = kingR),
@@ -48,10 +50,7 @@ object ProtectTheKing extends Game {
   override def handleKeyStrokes(): Unit = {
     dom.onkeypress = { e: dom.KeyboardEvent =>
       e.keyCode match {
-        case 113 => {
-          println(s"Pausing: $currentAction")
-          pause()
-        }
+        case 113 => pause()
         case 32 => currentAction = Some(dom.setInterval(() => {run(); draw()}, timeStep))
         case i => println(s"Keypress: $i")
       }
@@ -66,7 +65,8 @@ object ProtectTheKing extends Game {
     }
     dom.onmouseup = { e: dom.MouseEvent =>
       selected.foreach { b =>
-        b.velocity = Vector(e.clientX - b.position.x, e.clientY - b.position.y) / 10
+        b.velocity = Vector(e.clientX - b.position.x, e.clientY - b.position.y).unit * 15
+        println(s"Velocity: ${b.velocity}")
         selected = None
       }
     }

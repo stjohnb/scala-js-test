@@ -14,7 +14,7 @@ class Ball(val radius: Int = 5,
     ctx.fillRect(position.x.toInt - radius, position.y.toInt - radius, radius * 2, radius * 2)
   }
 
-  def move()(canvas: Canvas): Unit = {
+  def move(acceleration: Double)(canvas: Canvas): Unit = {
     if (position.x > canvas.width || position.x < 0) {
       velocity = velocity.copy(x = velocity.x * (smallRandom - 1))
     }
@@ -23,7 +23,7 @@ class Ball(val radius: Int = 5,
       velocity = velocity.copy(y = velocity.y * (smallRandom - 1))
     }
 
-    velocity = velocity * 0.99
+    velocity = velocity * acceleration
 
     position = Vector(position.x + velocity.x, position.y + velocity.y)
   }
