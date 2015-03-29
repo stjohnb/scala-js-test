@@ -13,18 +13,19 @@ object ProtectTheKing extends Game {
   override lazy val coefficientOfRestitution: Double = 1d
   override lazy val acceleration: Double = 0.98d
 
+  lazy val startingFraction = 6
   lazy val team1 = Seq(
-    ball(position = Vector(200, canvas.height /2), colour = RGB.blue, radius = kingR),
-    ball(position = Vector(270, (canvas.height /2) - (2 * pawnR)), colour = RGB.blue, radius = pawnR),
-    ball(position = Vector(340, canvas.height /2), colour = RGB.blue, radius = pawnR),
-    ball(position = Vector(270, (canvas.height /2) + (2 * pawnR)), colour = RGB.blue, radius = pawnR)
+    ball(position = Vector((canvas.width / startingFraction) - (pawnR +1), canvas.height /2), colour = RGB.blue, radius = kingR),
+    ball(position = Vector(canvas.width / startingFraction, (canvas.height /2) + (2 * pawnR + 1)), colour = RGB.blue, radius = pawnR),
+    ball(position = Vector((canvas.width / startingFraction) + (pawnR +1), canvas.height /2), colour = RGB.blue, radius = pawnR),
+    ball(position = Vector(canvas.width / startingFraction, (canvas.height /2) - (2 * pawnR + 1)), colour = RGB.blue, radius = pawnR)
   )
 
   lazy val team2 = Seq(
-    ball(position = Vector(1200, canvas.height /2), colour = RGB.green, radius = kingR),
-    ball(position = Vector(1120, (canvas.height /2) - (2 * pawnR)), colour = RGB.green, radius = pawnR),
-    ball(position = Vector(1040, canvas.height /2), colour = RGB.green, radius = pawnR),
-    ball(position = Vector(1120, (canvas.height /2) + (2 * pawnR)), colour = RGB.green, radius = pawnR)
+    ball(position = Vector(canvas.width - ((canvas.width / startingFraction) - (pawnR +1)), canvas.height /2), colour = RGB.green, radius = kingR),
+    ball(position = Vector(canvas.width - (canvas.width / startingFraction), (canvas.height /2) - (2 * pawnR + 1)), colour = RGB.green, radius = pawnR),
+    ball(position = Vector(canvas.width - ((canvas.width / startingFraction) + (pawnR +1)), canvas.height /2), colour = RGB.green, radius = pawnR),
+    ball(position = Vector(canvas.width - (canvas.width / startingFraction), (canvas.height /2) + (2 * pawnR + 1)), colour = RGB.green, radius = pawnR)
   )
 
   //height and with here are canvas heights and widths... not real life goal width
