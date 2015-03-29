@@ -15,3 +15,12 @@ case class Vector(x: Double, y: Double) {
 
   def unit: Vector = this / magnitude
 }
+
+object Vector {
+
+  def unitNormalAndTangent(v1: Vector, v2: Vector): (Vector, Vector) = {
+    val unitNormal = Vector(v1.x - v2.x, v1.y - v2.y).unit
+    val unitTangent = Vector(-1 * unitNormal.y, unitNormal.x)
+    (unitNormal, unitTangent)
+  }
+}

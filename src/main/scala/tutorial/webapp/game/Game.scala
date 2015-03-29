@@ -43,43 +43,7 @@ trait Game {
     for {
       i <- 0 to balls.size - 1
       j <- i + 1 to balls.size - 1
-    } collideIfNecessary(balls(i), balls(j))
-
-    def collideIfNecessary(b1: Ball, b2: Ball): Unit = {
-      if (b1.touching(b2)) performCollision()
-
-
-      def performCollision() = {
-        //Find the unit normal and the unit tangent
-        val unitNormal = Vector(b1.position.x - b2.position.x, b1.position.y - b2.position.y).unit
-        val unitTangent = Vector(-1 * unitNormal.y, unitNormal.x)
-
-        //Project velocities onto the unit normal and unit tangent
-        val v1n = unitNormal dotProduct b1.velocity
-        val v1t = unitTangent dotProduct b1.velocity
-        val v2n = unitNormal dotProduct b2.velocity
-        val v2t = unitTangent dotProduct b2.velocity
-
-        //Tangential velocities are not changed
-        val v1tPrimeScalar = v1t
-        val v2tPrimeScalar = v2t
-
-        //Normal velocities obey 1d collision formulae
-        val v1nPrimeScalar = (coefficientOfRestitution * b2.mass * (v2n - v1n) + b1.mass * v1n + b2.mass * v2n) / (b1.mass + b2.mass)
-        val v2nPrimeScalar = (coefficientOfRestitution * b1.mass * (v1n - v2n) + b2.mass * v2n + b1.mass * v1n) / (b1.mass + b2.mass)
-
-        //Convert scalars into vectors
-        val v1nPrime = unitNormal * v1nPrimeScalar
-        val v1tPrime = unitTangent * v1tPrimeScalar
-
-        val v2nPrime = unitNormal * v2nPrimeScalar
-        val v2tPrime = unitTangent * v2tPrimeScalar
-
-        //Final velocities are the sums of normal and tangential velocities
-        b1.velocity = v1nPrime + v1tPrime
-        b2.velocity = v2nPrime + v2tPrime
-      }
-    }
+    } Ball.collideIfNecessary(balls(i), balls(j))(coefficientOfRestitution)
   }
 
   def draw() = {
