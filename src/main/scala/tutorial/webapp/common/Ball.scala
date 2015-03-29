@@ -10,8 +10,10 @@ class Ball(val radius: Int = 5,
                 var velocity: Vector = Vector (0, 0),
                 maxXy: Vector) {
   def draw(ctx: CanvasRenderingContext2D): Unit = {
+    ctx.beginPath()
+    ctx.arc(position.x, position.y, radius, 0, 2* Math.PI, anticlockwise = false)
     ctx.fillStyle = colour.toString
-    ctx.fillRect(position.x.toInt - radius, position.y.toInt - radius, radius * 2, radius * 2)
+    ctx.fill()
   }
 
   def move(acceleration: Double)(canvas: Canvas): Unit = {
@@ -29,7 +31,6 @@ class Ball(val radius: Int = 5,
   }
 
   def smallRandom = (Random.nextDouble() - 0.5d) / 100
-
 
   lazy val mass = (4d / 3d) * Math.PI * radius * radius
 
