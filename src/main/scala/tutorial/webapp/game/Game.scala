@@ -11,6 +11,8 @@ object Game {
   var count = 0
   val timeStep = 2d
 
+  val cR = 0.8d //Coefficient of restitution
+
   val canvas = dom.document.getElementById("canvas").asInstanceOf[html.Canvas]
 
   var balls: Seq[Ball] = Seq.empty
@@ -58,8 +60,8 @@ object Game {
       val v2tPrimeScalar = v2t
 
       //Normal velocities obey 1d collision formulae
-      val v1nPrimeScalar = (v1n * (b1.mass - b2.mass) + 2 * b2.mass * v2n) / (b1.mass + b2.mass)
-      val v2nPrimeScalar = (v2n * (b2.mass - b1.mass) + 2 * b1.mass * v1n) / (b1.mass + b2.mass)
+      val v1nPrimeScalar = (cR * b2.mass * ( v2n - v1n) + b1.mass * v1n + b2.mass * v2n) / (b1.mass + b2.mass)
+      val v2nPrimeScalar = (cR * b1.mass * ( v1n - v2n) + b2.mass * v2n + b1.mass * v1n) / (b1.mass + b2.mass)
 
       //Convert scalars into vectors
       val v1nPrime = unitNormal * v1nPrimeScalar
