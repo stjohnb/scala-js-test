@@ -1,9 +1,7 @@
-package tutorial.webapp.game
+package tutorial.webapp.common
 
 import org.scalajs.dom._
 import org.scalajs.dom.html._
-import tutorial.webapp.common.RGB
-
 import scala.util.Random
 
 class Ball(val radius: Int = 5,
@@ -79,21 +77,6 @@ object Ball {
   }
 }
 
-case class Vector(x: Double, y: Double) {
-  def +(p: Vector) = Vector(x + p.x, y + p.y)
-  def -(p: Vector) = Vector(x - p.x, y - p.y)
-
-  def /(d: Double) = Vector(x / d, y / d)
-  def *(d: Double) = Vector(x * d, y * d)
-
-  def dotProduct(other: Vector): Double = {
-    this.x * other.x + this.y * other.y
-  }
-
-  def magnitude: Double = Math.sqrt(x*x + y*y)
-
-  def unit: Vector = this / magnitude
-}
 
 
 

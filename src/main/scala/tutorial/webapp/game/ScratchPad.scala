@@ -1,7 +1,6 @@
 package tutorial.webapp.game
 
-import org.scalajs.dom
-
+import tutorial.webapp.common.{Ball, Vector}
 import scala.scalajs.js.annotation.JSExport
 
 @JSExport

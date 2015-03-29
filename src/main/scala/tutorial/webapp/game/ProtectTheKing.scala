@@ -2,11 +2,9 @@ package tutorial.webapp.game
 
 import org.scalajs.dom
 import org.scalajs.dom.html
-import tutorial.webapp.common.RGB
-import tutorial.webapp.game.ScratchPad._
+import tutorial.webapp.common.{Ball, RGB, Vector}
 
 import scala.scalajs.js.annotation.JSExport
-
 @JSExport
 object ProtectTheKing extends Game {
 

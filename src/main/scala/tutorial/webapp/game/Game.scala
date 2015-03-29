@@ -3,10 +3,9 @@ package tutorial.webapp.game
 import org.scalajs.dom
 import org.scalajs.dom.html
 import org.scalajs.dom.html.Canvas
-import tutorial.webapp.game.ScratchPad._
 
 import scala.scalajs.js.annotation.JSExport
-
+import tutorial.webapp.common.{Ball, Vector}
 
 trait Game {
 
