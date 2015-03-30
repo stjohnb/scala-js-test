@@ -1,7 +1,7 @@
 package tutorial.webapp.game
 
 import org.scalajs.dom
-import org.scalajs.dom.html
+import org.scalajs.dom.{CanvasRenderingContext2D, html}
 import tutorial.webapp.common._
 
 import scala.scalajs.js.annotation.JSExport
@@ -53,7 +53,6 @@ object ProtectTheKing extends Game {
   override def handleKeyStrokes(): Unit = {
     dom.onkeypress = { e: dom.KeyboardEvent =>
       e.keyCode match {
-        case 113 => pauseDrawing()
         case 32 => currentAction = Some(dom.setInterval(() => {run(); draw()}, timeStep))
         case i => println(s"Keypress: $i")
       }
@@ -73,7 +72,7 @@ object ProtectTheKing extends Game {
         println(s"Velocity: ${b.velocity}")
         selected = None
         currentCoordinates = None
-        pauseDrawing()
+        draw()
       }
     }
     dom.onmousemove = { e: dom.MouseEvent =>
@@ -86,7 +85,10 @@ object ProtectTheKing extends Game {
   override def draw(): Unit = {
     val ctx = context(canvas)
     clear(canvas)
-    balls.foreach(_.draw(ctx))
+    balls.foreach{ b =>
+      b.draw(ctx)
+      if (!inTurn) drawArrow(from = b.position, arrow = b.velocity * 10)(ctx)
+    }
 
     for {
       origin <- selected.map(_.position)
@@ -96,16 +98,18 @@ object ProtectTheKing extends Game {
 
       val capped = if(intendedVelocity.magnitude > maxVelocity * 10) intendedVelocity.unit * maxVelocity * 10
       else intendedVelocity
-
-      val ctx = context(canvas)
-
-      ctx.beginPath()
-      ctx.strokeStyle = RGB.red.toString
-      ctx.lineWidth = 5
-      ctx.moveTo(origin.x, origin.y)
-      ctx.lineTo(origin.x + capped.x, origin.y + capped.y)
-      ctx.stroke()
+      
+      drawArrow(from = origin, arrow = capped)(context(canvas))
     }
+  }
+  
+  def drawArrow(from: Vector, arrow: Vector)(ctx: CanvasRenderingContext2D): Unit = {
+    ctx.beginPath()
+    ctx.strokeStyle = RGB.red.toString
+    ctx.lineWidth = 5
+    ctx.moveTo(from.x, from.y)
+    ctx.lineTo(from.x + arrow.x, from.y + arrow.y)
+    ctx.stroke()
   }
 
   override def run(): Unit = {
@@ -122,10 +126,6 @@ object ProtectTheKing extends Game {
       velocity = Vector(0,0),
       maxXy = Vector(canvas.height, canvas.width)
     )
-  }
-
-  override def init(): Unit = {
-    draw()
   }
 }
 

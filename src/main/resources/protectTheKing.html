@@ -5,14 +5,20 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <script type="text/javascript">
         function resize_canvas(){
-            tutorial.webapp.game.ScratchPad().resizeCanvas(document.getElementById('canvas'))
+            tutorial.webapp.game.ProtectTheKing().resizeCanvas(document.getElementById('canvas'))
         }
     </script>
 </head>
 <body onresize="resize_canvas()">
 
-<div>
-  <canvas id="canvas"></canvas>
+<div id="container">
+    <input id="go_button"
+           type="button"
+           style="z-index:2; position: absolute; right: 20px; top: 20px; width: 300px;"
+           value="Go!"
+           onclick="tutorial.webapp.game.ProtectTheKing().readyTurn()"/>
+
+    <canvas id="canvas" style="z-index:1"></canvas>
 </div>
 
 <script type="text/javascript" src="../scala-js-tutorial-fastopt.js"></script>

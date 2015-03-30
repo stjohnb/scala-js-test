@@ -23,21 +23,33 @@ trait Game {
 
   protected var currentAction: Option[Int] = None
 
-  var count = 0
+  protected var inTurn = false
+  protected var count = 0
+  
+  @JSExport
+  def readyTurn() = {
+    inTurn = true
+    currentAction = Some(dom.setInterval(() => {run(); this.draw()}, timeStep))
+  }
 
   def run(): Unit = {
     count += 1
-    if(count % turnLength == 0) pauseDrawing()
-    handleCollisions()
-    balls.foreach { b => b.move(acceleration)(canvas) }
+    if(count % turnLength == 0) {
+      inTurn = false
+      pauseDrawing()
+    }else{
+      handleCollisions()
+      balls.foreach { b => b.move(acceleration)(canvas) }
+      draw()
+    }
   }
 
-  def init(): Unit = {
-    val action = dom.setInterval(() => {run(); this.draw()}, timeStep)
-    currentAction = Some(action)
-  }
+  def init(): Unit = { draw() }
 
-  def pauseDrawing(): Unit = currentAction.foreach(dom.clearInterval)
+  def pauseDrawing(): Unit = {
+    currentAction.foreach(dom.clearInterval)
+    currentAction = None
+  }
 
   def handleCollisions() = {
     for {

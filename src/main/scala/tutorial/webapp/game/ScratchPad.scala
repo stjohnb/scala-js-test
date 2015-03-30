@@ -13,7 +13,6 @@ object ScratchPad extends Game{
     dom.onkeypress = { e: dom.KeyboardEvent =>
       e.keyCode match {
         case 32 => balls = balls :+ Ball(canvas)
-        case 113 => pauseDrawing()
         case _ =>
       }
     }
