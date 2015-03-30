@@ -13,7 +13,7 @@ object ScratchPad extends Game{
     dom.onkeypress = { e: dom.KeyboardEvent =>
       e.keyCode match {
         case 32 => balls = balls :+ Ball(canvas)
-        case 113 => pause()
+        case 113 => pauseDrawing()
         case _ =>
       }
     }
@@ -35,4 +35,9 @@ object ScratchPad extends Game{
 
   override def initialBalls: Seq[Ball] = Seq.empty
 
+  override def draw(): Unit  = {
+    val ctx = context(canvas)
+    clear(canvas)
+    balls.foreach(_.draw(ctx))
+  }
 }

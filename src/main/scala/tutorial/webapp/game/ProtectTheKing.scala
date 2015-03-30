@@ -2,7 +2,7 @@ package tutorial.webapp.game
 
 import org.scalajs.dom
 import org.scalajs.dom.html
-import tutorial.webapp.common.{RectangleDelta, Ball, RGB, Vector}
+import tutorial.webapp.common._
 
 import scala.scalajs.js.annotation.JSExport
 @JSExport
@@ -12,6 +12,7 @@ object ProtectTheKing extends Game {
   lazy val pawnR = 30
   override lazy val coefficientOfRestitution: Double = 1d
   override lazy val acceleration: Double = 0.98d
+  lazy val maxVelocity = 15
 
   lazy val startingFraction = 6
   lazy val team1 = Seq(
@@ -35,6 +36,7 @@ object ProtectTheKing extends Game {
   lazy val greenGoal = RectangleDelta(canvas.width - goalWidth, (canvas.height /2) - halfGoalHeight, goalWidth, halfGoalHeight * 2)
 
   var selected: Option[Ball] = None
+  var currentCoordinates: Option[Vector] = None
 
   override def initialBalls: Seq[Ball] = team1 ++ team2
 
@@ -51,7 +53,7 @@ object ProtectTheKing extends Game {
   override def handleKeyStrokes(): Unit = {
     dom.onkeypress = { e: dom.KeyboardEvent =>
       e.keyCode match {
-        case 113 => pause()
+        case 113 => pauseDrawing()
         case 32 => currentAction = Some(dom.setInterval(() => {run(); draw()}, timeStep))
         case i => println(s"Keypress: $i")
       }
@@ -63,13 +65,46 @@ object ProtectTheKing extends Game {
         maxXy = Vector(canvas.height, canvas.width)
       )
       selected = balls.find(cursor.touching)
+      currentAction = Some(dom.setInterval(() => {this.draw()}, timeStep))
     }
     dom.onmouseup = { e: dom.MouseEvent =>
       selected.foreach { b =>
-        b.velocity = Vector(e.clientX - b.position.x, e.clientY - b.position.y).unit * 15
+        b.velocity = Vector(e.clientX - b.position.x, e.clientY - b.position.y).unit * maxVelocity
         println(s"Velocity: ${b.velocity}")
         selected = None
+        currentCoordinates = None
+        pauseDrawing()
       }
+    }
+    dom.onmousemove = { e: dom.MouseEvent =>
+      selected.foreach { _ =>
+        currentCoordinates = Some(Vector(e.clientX, e.clientY))
+      }
+    }
+  }
+
+  override def draw(): Unit = {
+    val ctx = context(canvas)
+    clear(canvas)
+    balls.foreach(_.draw(ctx))
+
+    for {
+      origin <- selected.map(_.position)
+      destination <- currentCoordinates
+    } {
+      val intendedVelocity = destination - origin
+
+      val capped = if(intendedVelocity.magnitude > maxVelocity * 10) intendedVelocity.unit * maxVelocity * 10
+      else intendedVelocity
+
+      val ctx = context(canvas)
+
+      ctx.beginPath()
+      ctx.strokeStyle = RGB.red.toString
+      ctx.lineWidth = 5
+      ctx.moveTo(origin.x, origin.y)
+      ctx.lineTo(origin.x + capped.x, origin.y + capped.y)
+      ctx.stroke()
     }
   }
 
@@ -93,3 +128,5 @@ object ProtectTheKing extends Game {
     draw()
   }
 }
+
+case class Arrow(from: Vector, to: Vector)

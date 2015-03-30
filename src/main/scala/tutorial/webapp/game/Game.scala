@@ -27,17 +27,17 @@ trait Game {
 
   def run(): Unit = {
     count += 1
-    if(count % turnLength == 0) pause()
+    if(count % turnLength == 0) pauseDrawing()
     handleCollisions()
     balls.foreach { b => b.move(acceleration)(canvas) }
   }
 
   def init(): Unit = {
-    val action = dom.setInterval(() => {run(); draw()}, timeStep)
+    val action = dom.setInterval(() => {run(); this.draw()}, timeStep)
     currentAction = Some(action)
   }
 
-  def pause(): Unit = currentAction.foreach(dom.clearInterval)
+  def pauseDrawing(): Unit = currentAction.foreach(dom.clearInterval)
 
   def handleCollisions() = {
     for {
@@ -46,11 +46,7 @@ trait Game {
     } Ball.collideIfNecessary(balls(i), balls(j))(coefficientOfRestitution)
   }
 
-  def draw() = {
-    val ctx = context(canvas)
-    clear(canvas)
-    balls.foreach(_.draw(ctx))
-  }
+  def draw(): Unit
 
   @JSExport
   def resizeCanvas(canvas: html.Canvas) = {
