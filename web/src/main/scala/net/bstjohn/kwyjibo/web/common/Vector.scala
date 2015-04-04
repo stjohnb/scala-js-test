@@ -1,4 +1,4 @@
-package tutorial.webapp.common
+package net.bstjohn.kwyjibo.web.common
 
 case class Vector(x: Double, y: Double) {
   def +(p: Vector) = Vector(x + p.x, y + p.y)

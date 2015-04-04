@@ -1,4 +1,4 @@
-package tutorial.webapp.common
+package net.bstjohn.kwyjibo.web.common
 
 import org.scalajs.dom._
 import org.scalajs.dom.html._

@@ -1,11 +1,11 @@
-package tutorial.webapp.game
+package net.bstjohn.kwyjibo.web.game
 
+import net.bstjohn.kwyjibo.web.common.Ball
 import org.scalajs.dom
 import org.scalajs.dom.html
 import org.scalajs.dom.html.Canvas
 
 import scala.scalajs.js.annotation.JSExport
-import tutorial.webapp.common.{Ball, Vector}
 
 trait Game {
 

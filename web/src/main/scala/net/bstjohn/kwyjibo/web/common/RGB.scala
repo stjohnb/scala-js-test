@@ -1,6 +1,4 @@
-package tutorial.webapp.common
-
-import tutorial.webapp.fractal.Point
+package net.bstjohn.kwyjibo.web.common
 
 case class RGB(r: Int, g: Int, b: Int) {
   override def toString = s"rgb($r, $g, $b)"

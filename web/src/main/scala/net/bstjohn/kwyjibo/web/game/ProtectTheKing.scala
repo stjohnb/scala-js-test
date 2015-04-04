@@ -1,8 +1,9 @@
-package tutorial.webapp.game
+package net.bstjohn.kwyjibo.web.game
 
+import net.bstjohn.kwyjibo.web.common
+import net.bstjohn.kwyjibo.web.common.{Ball, RectangleDelta, RGB}
 import org.scalajs.dom
 import org.scalajs.dom.{CanvasRenderingContext2D, html}
-import tutorial.webapp.common._
 
 import scala.scalajs.js.annotation.JSExport
 @JSExport
@@ -16,17 +17,17 @@ object ProtectTheKing extends Game {
 
   lazy val startingFraction = 6
   lazy val team1 = Seq(
-    ball(position = Vector((canvas.width / startingFraction) - (pawnR +1), canvas.height /2), colour = RGB.blue, radius = kingR),
-    ball(position = Vector(canvas.width / startingFraction, (canvas.height /2) + (2 * pawnR + 1)), colour = RGB.blue, radius = pawnR),
-    ball(position = Vector((canvas.width / startingFraction) + (pawnR +1), canvas.height /2), colour = RGB.blue, radius = pawnR),
-    ball(position = Vector(canvas.width / startingFraction, (canvas.height /2) - (2 * pawnR + 1)), colour = RGB.blue, radius = pawnR)
+    ball(position = common.Vector((canvas.width / startingFraction) - (pawnR +1), canvas.height /2), colour = RGB.blue, radius = kingR),
+    ball(position = common.Vector(canvas.width / startingFraction, (canvas.height /2) + (2 * pawnR + 1)), colour = RGB.blue, radius = pawnR),
+    ball(position = common.Vector((canvas.width / startingFraction) + (pawnR +1), canvas.height /2), colour = RGB.blue, radius = pawnR),
+    ball(position = common.Vector(canvas.width / startingFraction, (canvas.height /2) - (2 * pawnR + 1)), colour = RGB.blue, radius = pawnR)
   )
 
   lazy val team2 = Seq(
-    ball(position = Vector(canvas.width - ((canvas.width / startingFraction) - (pawnR +1)), canvas.height /2), colour = RGB.green, radius = kingR),
-    ball(position = Vector(canvas.width - (canvas.width / startingFraction), (canvas.height /2) - (2 * pawnR + 1)), colour = RGB.green, radius = pawnR),
-    ball(position = Vector(canvas.width - ((canvas.width / startingFraction) + (pawnR +1)), canvas.height /2), colour = RGB.green, radius = pawnR),
-    ball(position = Vector(canvas.width - (canvas.width / startingFraction), (canvas.height /2) + (2 * pawnR + 1)), colour = RGB.green, radius = pawnR)
+    ball(position = common.Vector(canvas.width - ((canvas.width / startingFraction) - (pawnR +1)), canvas.height /2), colour = RGB.green, radius = kingR),
+    ball(position = common.Vector(canvas.width - (canvas.width / startingFraction), (canvas.height /2) - (2 * pawnR + 1)), colour = RGB.green, radius = pawnR),
+    ball(position = common.Vector(canvas.width - ((canvas.width / startingFraction) + (pawnR +1)), canvas.height /2), colour = RGB.green, radius = pawnR),
+    ball(position = common.Vector(canvas.width - (canvas.width / startingFraction), (canvas.height /2) + (2 * pawnR + 1)), colour = RGB.green, radius = pawnR)
   )
 
   //height and with here are canvas heights and widths... not real life goal width
@@ -36,7 +37,7 @@ object ProtectTheKing extends Game {
   lazy val greenGoal = RectangleDelta(canvas.width - goalWidth, (canvas.height /2) - halfGoalHeight, goalWidth, halfGoalHeight * 2)
 
   var selected: Option[Ball] = None
-  var currentCoordinates: Option[Vector] = None
+  var currentCoordinates: Option[common.Vector] = None
 
   override def initialBalls: Seq[Ball] = team1 ++ team2
 
@@ -61,8 +62,8 @@ object ProtectTheKing extends Game {
       if (!inTurn) {
         val cursor = new Ball(
           radius = 15,
-          position = Vector(e.clientX, e.clientY),
-          maxXy = Vector(canvas.height, canvas.width)
+          position = common.Vector(e.clientX, e.clientY),
+          maxXy = common.Vector(canvas.height, canvas.width)
         )
         selected = balls.find(cursor.touching)
         currentAction = Some(dom.setInterval(() => {this.draw()}, timeStep))
@@ -70,7 +71,7 @@ object ProtectTheKing extends Game {
     }
     dom.onmouseup = { e: dom.MouseEvent =>
       selected.foreach { b =>
-        b.velocity = Vector(e.clientX - b.position.x, e.clientY - b.position.y).unit * maxVelocity
+        b.velocity = common.Vector(e.clientX - b.position.x, e.clientY - b.position.y).unit * maxVelocity
         println(s"Velocity: ${b.velocity}")
         selected = None
         currentCoordinates = None
@@ -79,7 +80,7 @@ object ProtectTheKing extends Game {
     }
     dom.onmousemove = { e: dom.MouseEvent =>
       selected.foreach { _ =>
-        currentCoordinates = Some(Vector(e.clientX, e.clientY))
+        currentCoordinates = Some(common.Vector(e.clientX, e.clientY))
       }
     }
   }
@@ -105,7 +106,7 @@ object ProtectTheKing extends Game {
     }
   }
   
-  def drawArrow(from: Vector, arrow: Vector)(ctx: CanvasRenderingContext2D): Unit = {
+  def drawArrow(from: common.Vector, arrow: common.Vector)(ctx: CanvasRenderingContext2D): Unit = {
     ctx.beginPath()
     ctx.strokeStyle = RGB.red.toString
     ctx.lineWidth = 5
@@ -120,15 +121,14 @@ object ProtectTheKing extends Game {
     balls = balls.filterNot(b => blueGoal.contains(b.position) || greenGoal.contains(b.position))
   }
 
-  def ball(radius: Int = 5, position: Vector, colour: RGB): Ball = {
+  def ball(radius: Int = 5, position: common.Vector, colour: RGB): Ball = {
     new Ball(
       radius = radius,
       colour = colour,
       position = position,
-      velocity = Vector(0,0),
-      maxXy = Vector(canvas.height, canvas.width)
+      velocity = common.Vector(0,0),
+      maxXy = common.Vector(canvas.height, canvas.width)
     )
   }
 }
 
-case class Arrow(from: Vector, to: Vector)
