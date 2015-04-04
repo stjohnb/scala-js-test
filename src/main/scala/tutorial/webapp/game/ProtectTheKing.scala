@@ -53,18 +53,20 @@ object ProtectTheKing extends Game {
   override def handleKeyStrokes(): Unit = {
     dom.onkeypress = { e: dom.KeyboardEvent =>
       e.keyCode match {
-        case 32 => currentAction = Some(dom.setInterval(() => {run(); draw()}, timeStep))
+        case 32 => readyTurn()
         case i => println(s"Keypress: $i")
       }
     }
     dom.onmousedown = { e: dom.MouseEvent =>
-      val cursor = new Ball(
-        radius = 15,
-        position = Vector(e.clientX, e.clientY),
-        maxXy = Vector(canvas.height, canvas.width)
-      )
-      selected = balls.find(cursor.touching)
-      currentAction = Some(dom.setInterval(() => {this.draw()}, timeStep))
+      if (!inTurn) {
+        val cursor = new Ball(
+          radius = 15,
+          position = Vector(e.clientX, e.clientY),
+          maxXy = Vector(canvas.height, canvas.width)
+        )
+        selected = balls.find(cursor.touching)
+        currentAction = Some(dom.setInterval(() => {this.draw()}, timeStep))
+      }
     }
     dom.onmouseup = { e: dom.MouseEvent =>
       selected.foreach { b =>
