@@ -1,6 +1,6 @@
 package net.bstjohn.kwyjibo.web.game
 
-import net.bstjohn.kwyjibo.web.common.Ball
+import net.bstjohn.kwyjibo.core.{Ball, Vector}
 import org.scalajs.dom
 import org.scalajs.dom.html
 import org.scalajs.dom.html.Canvas
@@ -39,7 +39,7 @@ trait Game {
       pauseDrawing()
     }else{
       handleCollisions()
-      balls.foreach { b => b.move(acceleration)(canvas) }
+      balls.foreach { b => b.move(acceleration)(Vector(canvas.height, canvas.width)) }
       draw()
     }
   }

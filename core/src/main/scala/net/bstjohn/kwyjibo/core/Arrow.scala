@@ -1,4 +1,3 @@
-package net.bstjohn.kwyjibo.web.common
-
+package net.bstjohn.kwyjibo.core
 
 case class Arrow(from: Vector, to: Vector)

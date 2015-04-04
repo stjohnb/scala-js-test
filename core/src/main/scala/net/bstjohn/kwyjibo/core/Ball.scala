@@ -1,27 +1,19 @@
-package net.bstjohn.kwyjibo.web.common
+package net.bstjohn.kwyjibo.core
 
-import org.scalajs.dom._
-import org.scalajs.dom.html._
 import scala.util.Random
 
 class Ball(val radius: Int = 5,
-           colour: RGB = RGB(Random.nextInt(255), Random.nextInt(255),	Random.nextInt(255)),
+           val colour: RGB = RGB(Random.nextInt(255), Random.nextInt(255),	Random.nextInt(255)),
            var position: Vector,
            var velocity: Vector = Vector (0, 0),
            maxXy: Vector) {
-  def draw(ctx: CanvasRenderingContext2D): Unit = {
-    ctx.beginPath()
-    ctx.arc(position.x, position.y, radius, 0, 2* Math.PI, anticlockwise = false)
-    ctx.fillStyle = colour.toString
-    ctx.fill()
-  }
 
-  def move(acceleration: Double)(canvas: Canvas): Unit = {
-    if (position.x > canvas.width || position.x < 0) {
+  def move(acceleration: Double)(maxXy: Vector): Unit = {
+    if (position.x > maxXy.x || position.x < 0) {
       velocity = velocity.copy(x = velocity.x * (smallRandom - 1))
     }
 
-    if (position.y > canvas.height || position.y < 0) {
+    if (position.y > maxXy.y || position.y < 0) {
       velocity = velocity.copy(y = velocity.y * (smallRandom - 1))
     }
 
@@ -72,10 +64,6 @@ object Ball {
   def randomColour = RGB(Random.nextInt(255), Random.nextInt(255),	Random.nextInt(255))
 
   def randomSpeed: Double = (Random.nextInt(maxSpeed) - (maxSpeed / 2)) * Random.nextDouble()
-
-  def apply(canvas: html.Canvas): Ball = {
-    Ball(maxXy = Vector(canvas.height, canvas.width))
-  }
 
   def collideIfNecessary(b1: Ball, b2: Ball)(coefficientOfRestitution: Double): Unit = {
     if (b1.touching(b2) && gettingCloser()) {

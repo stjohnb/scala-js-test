@@ -1,4 +1,4 @@
-package net.bstjohn.kwyjibo.web.common
+package net.bstjohn.kwyjibo.core
 
 case class Vector(x: Double, y: Double) {
   def +(p: Vector) = Vector(x + p.x, y + p.y)

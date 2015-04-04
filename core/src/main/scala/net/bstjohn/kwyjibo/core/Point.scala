@@ -1,4 +1,4 @@
-package net.bstjohn.kwyjibo.web.common
+package net.bstjohn.kwyjibo.core
 
 case class Point(x: Int, y: Int) {
   def +(p: Point) = Point(x + p.x, y + p.y)

@@ -1,4 +1,4 @@
-package net.bstjohn.kwyjibo.web.common
+package net.bstjohn.kwyjibo.core
 
 case class RectangleDelta(x: Int, y: Int, deltaX: Int, deltaY: Int) {
   def contains(point: Vector): Boolean = {

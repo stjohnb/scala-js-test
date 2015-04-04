@@ -1,4 +1,4 @@
-package net.bstjohn.kwyjibo.web.common
+package net.bstjohn.kwyjibo.core
 
 case class RGB(r: Int, g: Int, b: Int) {
   override def toString = s"rgb($r, $g, $b)"
