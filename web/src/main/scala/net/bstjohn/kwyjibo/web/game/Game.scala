@@ -28,6 +28,7 @@ trait Game {
   
   @JSExport
   def readyTurn() = {
+    pauseDrawing()
     inTurn = true
     currentAction = Some(dom.setInterval(() => {run(); this.draw()}, timeStep))
   }

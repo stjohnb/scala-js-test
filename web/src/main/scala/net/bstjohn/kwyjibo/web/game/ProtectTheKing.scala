@@ -65,6 +65,7 @@ object ProtectTheKing extends Game {
           maxXy = Vector(canvas.height, canvas.width)
         )
         selected = balls.find(cursor.touching)
+        pauseDrawing()
         currentAction = Some(dom.setInterval(() => {this.draw()}, timeStep))
       }
     }
