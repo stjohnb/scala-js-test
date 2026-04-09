@@ -39,7 +39,7 @@ trait Game {
       pauseDrawing()
     }else{
       handleCollisions()
-      balls.foreach { b => b.move(acceleration)(Vector(canvas.height, canvas.width)) }
+      balls.foreach { b => b.move(acceleration)(Vector(canvas.width, canvas.height)) }
       draw()
     }
   }

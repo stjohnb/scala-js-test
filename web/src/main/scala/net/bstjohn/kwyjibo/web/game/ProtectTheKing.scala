@@ -62,7 +62,7 @@ object ProtectTheKing extends Game {
         val cursor = new Ball(
           radius = 15,
           position = Vector(e.clientX, e.clientY),
-          maxXy = Vector(canvas.height, canvas.width)
+          maxXy = Vector(canvas.width, canvas.height)
         )
         selected = balls.find(cursor.touching)
         currentAction = Some(dom.setInterval(() => {this.draw()}, timeStep))
@@ -130,7 +130,7 @@ object ProtectTheKing extends Game {
       colour = colour,
       position = position,
       velocity = Vector(0,0),
-      maxXy = Vector(canvas.height, canvas.width)
+      maxXy = Vector(canvas.width, canvas.height)
     )
   }
 }
