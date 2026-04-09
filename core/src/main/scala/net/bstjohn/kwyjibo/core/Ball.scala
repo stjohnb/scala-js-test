@@ -26,9 +26,6 @@ class Ball(val radius: Int = 5,
 
   lazy val mass = (4d / 3d) * Math.PI * radius * radius
 
-  def momentumX = mass * velocity.x
-  def momentumY = mass * velocity.y
-
   def touching(other: Ball): Boolean = {
     val rSum = this.radius + other.radius
 
@@ -50,20 +47,6 @@ class Ball(val radius: Int = 5,
 object Ball {
 
   val maxSpeed = 100
-
-  def apply(maxXy: Vector): Ball = {
-    new Ball(
-      radius = Random.nextInt(5) + 1,
-      colour = randomColour,
-      position = Vector(Random.nextInt(maxXy.x.toInt) /2, Random.nextInt(maxXy.y.toInt)) /2,
-      velocity = Vector(randomSpeed, randomSpeed),
-      maxXy = maxXy
-    )
-  }
-
-  def randomColour = RGB(Random.nextInt(255), Random.nextInt(255),	Random.nextInt(255))
-
-  def randomSpeed: Double = (Random.nextInt(maxSpeed) - (maxSpeed / 2)) * Random.nextDouble()
 
   def collideIfNecessary(b1: Ball, b2: Ball)(coefficientOfRestitution: Double): Unit = {
     if (b1.touching(b2) && gettingCloser()) {
