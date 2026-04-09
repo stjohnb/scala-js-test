@@ -26,9 +26,7 @@ build.sbt
 ```
 core/src/main/scala/net/bstjohn/kwyjibo/core/
 ├── Vector.scala          # 2D vector math (physics)
-├── Point.scala           # 2D integer point
 ├── Ball.scala            # Physics object with collision logic
-├── Arrow.scala           # Arrow data (from/to vectors)
 ├── RGB.scala             # Color with toString -> CSS rgb()
 └── RectangleDelta.scala  # Rectangle for boundary/goal zones
 
@@ -49,7 +47,7 @@ web/src/main/
 - `ball.move(acceleration)(maxXy)` — scales velocity by `acceleration` (friction), then clamps to bounds. Boundary hits reflect velocity.
 - `Ball.collideIfNecessary(b1, b2)(coefficientOfRestitution)` — detects overlap via `touching`, decomposes velocities into normal/tangent components, applies conservation of momentum with restitution, updates both balls.
 
-All other types (`Vector`, `Point`, `Arrow`, `RGB`, `RectangleDelta`) are immutable case classes.
+All other types (`Vector`, `RGB`, `RectangleDelta`) are immutable case classes.
 
 ### Game Loop (Template Method)
 
