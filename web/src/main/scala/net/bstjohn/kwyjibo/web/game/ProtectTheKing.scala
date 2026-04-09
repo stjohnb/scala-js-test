@@ -75,6 +75,7 @@ object ProtectTheKing extends Game {
         println(s"Velocity: ${b.velocity}")
         selected = None
         currentCoordinates = None
+        pauseDrawing()
         draw()
       }
     }
