@@ -70,12 +70,12 @@ object ProtectTheKing extends Game {
       }
     }
     dom.onmouseup = { e: dom.MouseEvent =>
+      pauseDrawing()
       selected.foreach { b =>
         b.velocity = Vector(e.clientX - b.position.x, e.clientY - b.position.y).unit * maxVelocity
         println(s"Velocity: ${b.velocity}")
         selected = None
         currentCoordinates = None
-        pauseDrawing()
         draw()
       }
     }
